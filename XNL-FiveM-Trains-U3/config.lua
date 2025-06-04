@@ -1,100 +1,149 @@
 --=============================================================
--- Settings you CAN change and are meant to be changed, YAY :P
--- I do NOT use these on my server but have implemented it for
--- other users to make it more easy to adapt to their roleplay
--- server for example.
+-- QBCore Integration Settings
 --=============================================================
-PayWithBank 			= 25		-- Change this to 1 if you want users to pay with bank card (NOTE: Do implement your OWN banking system here please!)
-UserBankIDi 			= 3		-- 1 = Maze, 2 = Bank Of Liberty, 3 = Fleeca  (This will show the corresponding message when the player doesn't have enoug money)
-AllowEnterTrainWanted	= 1		-- Change to 1 if you want to allow players to ENTER the train when they have a wanted level
-TicketPrice				= 25	-- Change to any value YOU think is suitable for a Metro Ticket in your (RP) Server
-								-- NOTE: The StationsExitScanRadius HAS TO BE A FLOAT! (15.0 for example (which is the default!))
+Config = {}
 
-ReportTerroristOnMetro	= true	-- When set to true the player will get an INSTANT wanted level of 4 when shooting on the Metro,
-								-- this to 'contribute' to 'terroristic behavior' realism on (Real-Life) RP servers (where it's not normal either to
-								-- just (randomly) shoot while on/in public transportation!) if you want to ENABLE shooting from the Metro (as passenger)
-								-- then change this value to false
+-- QBCore Settings
+Config.UseQBCore = true -- Set to false to use original system
+Config.QBCoreExport = 'qb-core' -- Your QBCore export name
 
-Debug					= true	-- Do you want some debug message ? 
+-- Inventory Settings
+Config.UseQBInventory = true -- Use qb-inventory for physical tickets
+Config.TicketItemName = 'metro_ticket' -- Item name in qb-core/shared/items.lua
+Config.TicketExpireTime = 24 -- Hours until ticket expires (24 = 1 day)
 
+-- Banking Settings
+Config.PayWithBank = true -- true = bank account, false = cash
+Config.TicketPrice = 25 -- Price for metro ticket
+Config.BankAccount = 'bank' -- QBCore bank account type
 
--- There is all the messages for every action in this script
--- Language available actually : 
--- en (English)
--- fr (Français)
--- es (Spanish)
+-- Database Settings
+Config.UseDatabase = true -- Store ticket purchases in database
+Config.PersistentTickets = true -- Tickets survive server restarts
 
-Language = 'en' 
-Message = {}
+-- Target Settings
+Config.UseQBTarget = true -- Use qb-target for interactions
+Config.TargetDistance = 2.0 -- Distance for qb-target interactions
 
-Message['en'] = {
-	['we_warned_you'] = "We have warned you! Police have been notified of your illegal boarding!",
-	['no_ticket_leave'] = "You don't have a ticket! please leave the metro or we will need to call the police.",
-	['buyticket'] = "Press ~INPUT_CONTEXT~ to to buy a metro ticket",
-	['press_to_enter'] = "Press ~INPUT_CONTEXT~ while facing (and near) the Metro to enter it.",
+-- Security Settings
+Config.AllowEnterTrainWanted = false -- Allow players with wanted level to enter
+Config.ReportTerroristOnMetro = true -- Give wanted level for shooting on metro
+Config.TerroristWantedLevel = 4 -- Wanted level for shooting on metro
+Config.IllegalBoardingWantedLevel = 1 -- Wanted level for boarding without ticket
+
+-- Notification Settings
+Config.NotificationType = 'qb' -- 'qb' for QBCore notifications, 'original' for SMS style
+
+-- Debug
+Config.Debug = true
+
+-- Language Settings
+Config.Language = 'en' 
+Config.Message = {}
+
+Config.Message['en'] = {
+	['we_warned_you'] = "Police have been notified of your illegal boarding!",
+	['no_ticket_leave'] = "You don't have a ticket! Please leave the metro or police will be called.",
+	['buyticket'] = "Buy Metro Ticket",
+	['buyticket_desc'] = "Purchase a metro ticket for $" .. Config.TicketPrice,
+	['use_ticket'] = "Use Metro Ticket",
+	['use_ticket_desc'] = "Show your metro ticket to validate entry",
 	['los_santos_transit'] = "Los Santos Transit",
 	['tourist_information'] = "Tourist Information",
-	['already_got_ticket'] = "You already have a valid Metro Ticket, please go to one of the stations and board the Metro",
-	['account_information'] = "Account Information",
-	['account_nomoney'] = "Transaction failed, you do not have sufficient funds.",
-	['ticket_purchased'] = "Thank you for your purchase, your ticket will be valid for the current session.",
-	['stop_toolate'] = "Sorry, it seems that you pressed a little bit to late, you'll have to wait for the next station.",
-	['sorry'] = "Sorry",
-	['exit_metro_random'] = ", but it's not allowed to randomly exit the Metro. Please wait for the next station!",
-	['Sir'] = "Sir",
-	['Miss'] = "Miss",
-	['need_ticket'] = "Sorry, You will need to buy a LST Metro Ticket first.",
-	['have_wantedlevel'] = "Sorry we do not allow futugives in our Metro's. All passengers should be able to travel safely!",
-	['entered_metro'] = "You've exited the Metro, your ticket has been invalidated.",
-	['terrorist'] = "We will NOT tolerate terrorist behaviour on our public transport vehicles!",
-	['no_metro_spawned'] = "Our Appologies, something has gone terribly wrong, you have received a free ticket!",
-	['travel_metro'] = "Thank you for traveling with Los Santos Transit, your ticket has been approved.",
+	['already_got_ticket'] = "You already have a valid metro ticket in your inventory!",
+	['account_nomoney'] = "You don't have enough money for a metro ticket!",
+	['ticket_purchased'] = "Metro ticket purchased and added to your inventory!",
+	['ticket_used'] = "Metro ticket validated for travel!",
+	['ticket_expired'] = "Your metro ticket has expired!",
+	['no_ticket_inventory'] = "You don't have a metro ticket in your inventory!",
+	['ticket_already_used'] = "This metro ticket has already been used!",
+	['entered_metro'] = "You've exited the metro.",
+	['terrorist'] = "Terrorist behavior detected on public transport!",
+	['travel_metro'] = "Thank you for traveling with Los Santos Transit!",
+	['ticket_required'] = "You need a valid metro ticket to board!",
+	['payment_success'] = "Payment successful!",
+	['payment_failed'] = "Payment failed - insufficient funds!",
+	['inventory_full'] = "Your inventory is full! Cannot give metro ticket.",
 }
 
-Message['fr'] = {
-	['we_warned_you'] = "Nous vous avons prévenu ! La police a été informée de votre embarquement illégal !",
-	['no_ticket_leave'] = "Vous n'avez pas de billet ! veuillez quitter le métro ou nous devrons appeler la police.",
-	['buyticket'] = "Appuyez sur ~INPUT_CONTEXT~ pour acheter un ticket de Metro",
-	['press_to_enter'] = "Appuyez sur ~INPUT_CONTEXT~ en face (et proche) du Metro pour entrer dedans.",
+Config.Message['fr'] = {
+	['we_warned_you'] = "La police a été informée de votre embarquement illégal !",
+	['no_ticket_leave'] = "Vous n'avez pas de billet ! Veuillez quitter le métro.",
+	['buyticket'] = "Acheter un Ticket",
+	['buyticket_desc'] = "Acheter un ticket de métro pour $" .. Config.TicketPrice,
 	['los_santos_transit'] = "Los Santos Transit",
 	['tourist_information'] = "Information Touriste",
-	['already_got_ticket'] = "Vous avez déjà un ticket de Metro valide, merci de vous rendre dans une de nos stations et monter dans un Metro",
-	['account_information'] = "Information Compte",
-	['account_nomoney'] = "Transaction échouée, solde insuffisant",
-	['ticket_purchased'] = "Merci pour votre achat, votre ticket sera valide pendant votre session actuelle.",
-	['stop_toolate'] = "Désolé, il semble que vous avez appuyé trop tard, vous devez attendre la prochaine station.",
-	['sorry'] = "Désolé",
-	['exit_metro_random'] = ", mais il n'est pas permis de sortir aléatoirement du Metro. Merci d'attendre la prochaine station !",
-	['Sir'] = "Monsieur",
-	['Miss'] = "Mademoiselle",
-	['need_ticket'] = "Désolé, vous devez acheté d'abord un ticket de Metro.",
-	['have_wantedlevel'] = "Désolé, nous ne tolérons pas les fugitifs dans nos Metro. Tout les passagers doivent voyager en toute sécurité !",
+	['already_got_ticket'] = "Vous avez déjà un ticket valide !",
+	['account_nomoney'] = "Vous n'avez pas assez d'argent !",
+	['ticket_purchased'] = "Ticket acheté avec succès !",
 	['entered_metro'] = "Vous êtes sorti du métro, votre ticket a été invalidé.",
-	['terrorist'] = "Nous ne tolérerons PAS le comportement terroriste sur nos véhicules de transport public !",
-	['no_metro_spawned'] = "Nos escuses, quelque chose s'est mal passé, vous avez reçu un billet gratuit!",
-	['travel_metro'] = "Merci d'avoir voyagé avec Los Santos Transit, votre billet a été approuvé.",
+	['terrorist'] = "Comportement terroriste détecté !",
+	['travel_metro'] = "Merci d'avoir voyagé avec Los Santos Transit !",
+	['ticket_required'] = "Vous avez besoin d'un ticket !",
+	['payment_success'] = "Paiement réussi !",
+	['payment_failed'] = "Paiement échoué - fonds insuffisants !",
 }
 
-Message['es'] = {
-	['we_warned_you'] = "¡Te lo hemos advertido! ¡La policía ha sido notificada de su abordaje ilegal!",
-	['no_ticket_leave'] = "¡No tienes billete! Por favor, salga del metro o tendremos que llamar a la policía.",
-	['buyticket'] = "Pulsa ~INPUT_CONTEXT~ comprar un billete de metro",
-	['press_to_enter'] = "Pulsa ~INPUT_CONTEXT~ enfrente (y cerca) del Metro para entrar.",
-	['los_santos_transit'] = "Los Santos Transit",
-	['tourist_information'] = "Información turística",
-	['already_got_ticket'] = "Ya tiene un boleto de metro válido, vaya a una de nuestras estaciones y suba a un metro",
-	['account_information'] = "Información de la cuenta",
-	['account_nomoney'] = "Transacción fallida, saldo insuficiente",
-	['ticket_purchased'] = "Gracias por su compra, su entrada será válida durante su sesión actual.",
-	['stop_toolate'] = "Lo siento, parece que presionaste demasiado tarde, tienes que esperar a la siguiente estación.",
-	['sorry'] = "Lo siento",
-	['exit_metro_random'] = ", pero no está permitido salir del Metro al azar. Espere la próxima estación !",
-	['Sir'] = "señor",
-	['Miss'] = "señorita",
-	['need_ticket'] = "Lo siento, primero debes comprar un boleto de Metro.",
-	['have_wantedlevel'] = "Lo sentimos, no toleramos fugitivos en nuestro Metro. Todos los pasajeros deben viajar con seguridad !",
-	['entered_metro'] = "Has salido del Metro, tu billete ha sido invalidado.",
-	['terrorist'] = "NO toleraremos el comportamiento terrorista en nuestros vehículos de transporte público. !",
-	['no_metro_spawned'] = "Nuestras excusas, algo salió mal, recibiste un boleto gratis!",
-	['travel_metro'] = "Gracias por viajar con Los Santos Transit, su boleto ha sido aprobado.",
+-- Ticket Machine Locations (for qb-target)
+Config.TicketMachines = {
+    'prop_train_ticket_02',
+    'prop_train_ticket_02_tu', 
+    'v_serv_tu_statio3_'
+}
+
+-- Metro Exit Points (same as original)
+Config.MetroExitPoints = {
+	{StationId=0, x=230.82389831543, y=-1204.0643310547, z=38.902523040771},
+	{StationId=0, x=249.59216308594, y=-1204.7095947266, z=38.92488861084},
+	{StationId=0, x=270.33166503906, y=-1204.5366210938, z=38.902912139893},
+	{StationId=0, x=285.96697998047, y=-1204.2261962891, z=38.929733276367},
+	{StationId=0, x=304.13528442383, y=-1204.3720703125, z=38.892612457275},
+	{StationId=1, x=-294.53421020508, y=-353.38571166992, z=10.063089370728},
+	{StationId=1, x=-294.96997070313, y=-335.69766235352, z=10.06309223175},
+	{StationId=1, x=-294.66772460938, y=-318.29565429688, z=10.063152313232},
+	{StationId=1, x=-294.73403930664, y=-303.77200317383, z=10.063160896301},
+	{StationId=1, x=-294.84133911133, y=-296.04568481445, z=10.063159942627},
+	{StationId=2, x=-795.28063964844, y=-126.3436050415, z=19.950298309326},
+	{StationId=2, x=-811.87170410156, y=-136.16409301758, z=19.950319290161},
+	{StationId=2, x=-819.25689697266, y=-140.25764465332, z=19.95037651062},
+	{StationId=2, x=-826.06652832031, y=-143.90898132324, z=19.95037651062},
+	{StationId=2, x=-839.2587890625, y=-151.32421875, z=19.950378417969},
+	{StationId=2, x=-844.77874755859, y=-154.31440734863, z=19.950380325317},
+	{StationId=3, x=-1366.642578125, y=-440.04803466797, z=15.045327186584},
+	{StationId=3, x=-1361.4998779297, y=-446.50497436523, z=15.045324325562},
+	{StationId=3, x=-1357.4061279297, y=-453.40963745117, z=15.045320510864},
+	{StationId=3, x=-1353.4593505859, y=-461.88238525391, z=15.045323371887},
+	{StationId=3, x=-1346.1264648438, y=-474.15142822266, z=15.045383453369},
+	{StationId=3, x=-1338.1717529297, y=-488.97756958008, z=15.045383453369},
+	{StationId=3, x=-1335.0261230469, y=-493.50796508789, z=15.045380592346},
+	{StationId=4, x=-530.67529296875, y=-673.33935546875, z=11.808959960938},
+	{StationId=4, x=-517.35559082031, y=-672.76635742188, z=11.808965682983},
+	{StationId=4, x=-499.44836425781, y=-673.37664794922, z=11.808973312378},
+	{StationId=4, x=-483.1321105957, y=-672.68438720703, z=11.809024810791},
+	{StationId=4, x=-468.05545043945, y=-672.74371337891, z=11.80902671814},
+	{StationId=5, x=-206.90379333496, y=-1014.9454345703, z=30.138082504272},
+	{StationId=5, x=-212.65534973145, y=-1031.6101074219, z=30.208702087402},
+	{StationId=5, x=-212.65534973145, y=-1031.6101074219, z=30.208702087402},
+	{StationId=5, x=-217.0216217041, y=-1042.4768066406, z=30.573789596558},
+	{StationId=5, x=-221.29409790039, y=-1054.5914306641, z=30.13950920105},
+	{StationId=6, x=101.89681243896, y=-1714.7589111328, z=30.112174987793},
+	{StationId=6, x=113.05246734619, y=-1724.7247314453, z=30.111650466919},
+	{StationId=6, x=122.72943878174, y=-1731.7276611328, z=30.54141998291},
+	{StationId=6, x=132.55198669434, y=-1739.7276611328, z=30.109527587891},
+	{StationId=7, x=-532.24133300781, y=-1263.6896972656, z=26.901586532593},
+	{StationId=7, x=-539.62115478516, y=-1280.5207519531, z=26.908163070679},
+	{StationId=7, x=-545.18548583984, y=-1290.9525146484, z=26.901586532593},
+	{StationId=7, x=-549.92230224609, y=-1302.8682861328, z=26.901605606079},
+	{StationId=8, x=-872.75714111328, y=-2289.3198242188, z=-11.732793807983},
+	{StationId=8, x=-875.53247070313, y=-2297.67578125, z=-11.732793807983},
+	{StationId=8, x=-880.05035400391, y=-2309.1235351563, z=-11.732788085938},
+	{StationId=8, x=-883.25482177734, y=-2321.3303222656, z=-11.732738494873},
+	{StationId=8, x=-890.087890625, y=-2336.2553710938, z=-11.732738494873},
+	{StationId=8, x=-894.92395019531, y=-2350.4128417969, z=-11.732727050781},
+	{StationId=9, x=-1062.7882080078, y=-2690.7492675781, z=-7.4116077423096},
+	{StationId=9, x=-1071.6839599609, y=-2701.8503417969, z=-7.410071849823},
+	{StationId=9, x=-1079.0869140625, y=-2710.7033691406, z=-7.4100732803345},
+	{StationId=9, x=-1086.8758544922, y=-2720.0673828125, z=-7.4101362228394},
+	{StationId=9, x=-1095.3796386719, y=-2729.8442382813, z=-7.4101347923279},
+	{StationId=9, x=-1103.7401123047, y=-2740.369140625, z=-7.4101300239563}
 }

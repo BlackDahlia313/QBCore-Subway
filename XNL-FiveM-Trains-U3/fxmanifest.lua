@@ -1,12 +1,44 @@
-resource_manifest_version '05cfa83c-a124-4cfa-a768-c24a5811d8f9'
-resource_version '1.0.0'
-author 'VenomXNL'
-
-
-fx_version 'adamant'
+fx_version 'cerulean'
 game 'gta5'
 
-client_scripts {
-  "config.lua",
-  "client.lua"
+name 'XNL-FiveM-Trains'
+description 'Metro/Train system with QBCore integration and physical tickets'
+author 'VenomXNL | QBCore integration by Assistant'
+version '2.1.0'
+
+-- QBCore resource dependencies
+dependencies {
+    'qb-core',
+    'qb-target',
+    'oxmysql'
 }
+
+-- Optional dependencies
+optional_dependencies {
+    'qb-banking',
+    'qb-policejob',
+    'qb-inventory'
+}
+
+shared_scripts {
+    'config.lua'
+}
+
+client_scripts {
+    'client.lua'
+}
+
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    'server.lua'
+}
+
+-- Export functions
+exports {
+    'GetTicketPrice',
+    'GivePlayerTicket', 
+    'ChargePlayerForTicket',
+    'GetPlayerTickets'
+}
+
+lua54 'yes'
